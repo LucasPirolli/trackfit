@@ -13,7 +13,7 @@ const Home = () => {
         </button>
 
         <span className="new-user">
-          é um novo utilizador do TrackFit?{" "}
+          é um novo aqui no TrackFit ?
           <a
             className="link"
             onClick={() => {

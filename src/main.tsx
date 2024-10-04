@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Páginas TrackFit
 import Home from "./modules/pages/Home.tsx";
+import Login from "./modules/pages/Login.tsx";
 
 // Estilos TrackFit
 import "./styles/index.scss";
@@ -17,6 +18,7 @@ const Main = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>

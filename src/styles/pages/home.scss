@@ -27,6 +27,8 @@
   }
   > .new-user {
     font-size: 0.75rem;
+    display: flex;
+    gap: 5px;
     > .link {
       color: blue;
       cursor: pointer;
