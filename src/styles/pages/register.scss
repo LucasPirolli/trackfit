@@ -1,6 +1,6 @@
 @import "../base/common";
 
-.login {
+.register {
   height: 100vh;
   align-items: center;
   justify-content: center;
@@ -17,7 +17,7 @@
   }
   > .ant-form {
     width: 500px !important;
-    .btn-access {
+    .btn-register {
       width: 125px;
       height: 30px;
       font-size: 0.875rem;

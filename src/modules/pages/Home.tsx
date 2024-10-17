@@ -21,7 +21,7 @@ const Home = () => {
             }}
           >
             Registrar
-          </a>
+        </a>
         </span>
       </section>
     </>

@@ -2,14 +2,15 @@ import { Form, Input } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-import "../../styles/pages/login.scss";
+import "../../styles/pages/register.scss";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+
   return (
     <>
-      <section className="login">
+      <section className="register">
         <div className="container-icon">
           <LeftOutlined onClick={() => navigate("/")} />
         </div>
@@ -22,11 +23,14 @@ const Login = () => {
           <Form.Item label="Usuário">
             <Input placeholder="Digite" />
           </Form.Item>
+          <Form.Item label="E-mail">
+            <Input placeholder="Digite" type="email" />
+          </Form.Item>
           <Form.Item label="Senha">
             <Input.Password placeholder="Digite" type="" />
           </Form.Item>
           <Form.Item>
-            <button className="btn-access">Entrar</button>
+            <button className="btn-register">Cadastrar</button>
           </Form.Item>
         </Form>
       </section>
@@ -34,4 +38,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
