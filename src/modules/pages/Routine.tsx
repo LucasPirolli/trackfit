@@ -33,7 +33,7 @@ const Routine = () => {
               <Card
                 key={index}
                 actions={actions}
-                onClick={() => navigate("/training")}
+                onClick={() => navigate("/workout")}
               >
                 <Card.Meta
                   title={`Card title ${index + 1}`}
