@@ -26,7 +26,9 @@ const Login = () => {
             <Input.Password placeholder="Digite" type="" />
           </Form.Item>
           <Form.Item>
-            <button className="btn-access">Entrar</button>
+            <button className="btn-access" onClick={() => navigate("/routine")}>
+              Entrar
+            </button>
           </Form.Item>
         </Form>
       </section>

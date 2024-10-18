@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./modules/pages/Home.tsx";
 import Login from "./modules/pages/Login.tsx";
 import Register from "./modules/pages/Register.tsx";
+import Routine from "./modules/pages/Routine.tsx";
 
 // Estilos TrackFit
 import "./styles/index.scss";
@@ -21,6 +22,7 @@ const Main = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/routine" element={<Routine />} />
         </Routes>
       </BrowserRouter>
     </>

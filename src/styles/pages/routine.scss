@@ -1,0 +1,98 @@
+@import "../base/common";
+
+.routine {
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+
+  > .flex {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+    > .title {
+      font-size: 1rem;
+      color: #000;
+    }
+    > .btn-challange {
+      width: 70px;
+      height: 30px;
+      font-size: 0.75rem;
+      color: #fff;
+      font-size: 500;
+      border: none;
+      background-color: #000;
+      border-radius: 4px;
+      opacity: 1;
+      transition: 0.3s ease opacity;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+  > .container-btn-new-routine {
+    width: 50%;
+    display: flex;
+    justify-content: start;
+
+    > .btn-new-routine {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 0 10px;
+      height: 30px;
+      font-size: 0.75rem;
+      color: #000;
+      font-size: 500;
+      border: 1px solid #000;
+      background-color: transparent;
+      border-radius: 4px;
+      opacity: 1;
+      transition: 0.3s ease all;
+      &:hover {
+        background-color: rgba(37, 37, 37, 0.278);
+        border-color: rgba(37, 37, 37, 0.278);
+        color: #000;
+      }
+    }
+  }
+  > .container-cards {
+    max-height: 400px;
+    overflow: auto;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 10px;
+
+    > .ant-card {
+      border-color: #b9b9b9;
+      cursor: pointer;
+
+      .ant-card-meta-title {
+        font-size: 0.875rem;
+        margin-bottom: 5px;
+      }
+
+      .ant-card-meta-description {
+        p {
+          font-size: 0.75rem;
+        }
+      }
+
+      .ant-card-actions {
+        border-color: #b9b9b9;
+
+        > li {
+          &:not(:last-child) {
+            border-color: #b9b9b9;
+          }
+        }
+      }
+    }
+  }
+}
