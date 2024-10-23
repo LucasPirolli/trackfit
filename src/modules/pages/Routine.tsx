@@ -21,7 +21,10 @@ const Routine = () => {
           <button className="btn-challange">Desafio</button>
         </div>
         <div className="container-btn-new-routine">
-          <button className="btn-new-routine">
+          <button
+            className="btn-new-routine"
+            onClick={() => navigate("/new-routine")}
+          >
             <PlusOutlined />
             Nova rotina
           </button>

@@ -11,6 +11,7 @@ import Login from "./modules/pages/Login.tsx";
 import Register from "./modules/pages/Register.tsx";
 import Routine from "./modules/pages/Routine.tsx";
 import Workout from "./modules/pages/Workout.tsx";
+import NewRoutine from "./modules/pages/NewRoutine.tsx";
 
 // Estilos TrackFit
 import "./styles/index.scss";
@@ -25,6 +26,7 @@ const Main = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/routine" element={<Routine />} />
           <Route path="/workout" element={<Workout />} />
+          <Route path="/new-routine" element={<NewRoutine />} />
         </Routes>
       </BrowserRouter>
     </>

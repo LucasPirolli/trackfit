@@ -86,7 +86,7 @@ const Workout = () => {
           <DeleteOutlined key="delete" />
         </div>
       </div>
-      <h2 className="subtitile">Exercícios :</h2>
+      <h2 className="subtitle">Exercícios :</h2>
       <div className="container-cards">
         {Array(4)
           .fill(0)
