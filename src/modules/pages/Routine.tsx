@@ -4,6 +4,7 @@ import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import "../../styles/pages/routine.scss";
+import FloatingButton from "../components/ui/FloatingButton";
 
 const Routine = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Routine = () => {
 
   return (
     <>
+      <FloatingButton />
+
       <section className="routine">
         <div className="flex">
           <h1 className="title">Rotinas</h1>

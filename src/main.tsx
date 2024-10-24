@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 
 // Libs Components
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 // Páginas TrackFit
 import Home from "./modules/pages/Home.tsx";
@@ -15,6 +16,9 @@ import NewRoutine from "./modules/pages/NewRoutine.tsx";
 
 // Estilos TrackFit
 import "./styles/index.scss";
+
+// Estilos Terceiros
+import "react-toastify/dist/ReactToastify.css";
 
 const Main = () => {
   return (
@@ -34,7 +38,8 @@ const Main = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <React.Fragment>
+    <ToastContainer />
     <Main />
-  </React.StrictMode>
+  </React.Fragment>
 );
