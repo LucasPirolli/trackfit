@@ -10,7 +10,7 @@ import { LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import Toast from "../components/ui/Toast";
 
 // API
-import { createUser } from "../../services/endpois";
+import { createUser } from "../../services/endpoints";
 
 // Estilos
 import "../../styles/pages/register.scss";

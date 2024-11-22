@@ -10,7 +10,7 @@ import { LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 // API
-import { login } from "../../services/endpois";
+import { login } from "../../services/endpoints";
 
 // Estilos
 import "../../styles/pages/login.scss";
