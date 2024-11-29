@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 
 // Componentes Terceiros
-import { Button, Modal, Card, Form, Input, Select, Spin } from "antd";
+import { Button, Modal, Card, Form, Input, Select, Spin, Table } from "antd";
 import {
+  CloseOutlined,
   DeleteOutlined,
+  DeleteTwoTone,
   EditOutlined,
   LeftOutlined,
   LineChartOutlined,
@@ -14,6 +16,7 @@ import {
 
 // Funções Terceiros
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 // Componentes
 import Toast from "../components/ui/Toast";
@@ -24,19 +27,29 @@ import {
   getExercises,
   getMuscleGroups,
   postExercises,
+  postRoutine,
   putExercises,
 } from "../../services/endpoints";
 
 // Tipos
-import { CreateExercise, Exercise, MuscleGroup } from "../../types/types";
+import {
+  CreateExercise,
+  Exercise,
+  MuscleGroup,
+  RoutineData,
+} from "../../types/types";
 
 // Estilos
 import "../../styles/pages/newroutine.scss";
+
+// Contexto
+import { useMain } from "../../context/MainContext";
 
 const NewRoutine = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const { Option } = Select;
+  const { idUser, setIdUser } = useMain();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -68,6 +81,72 @@ const NewRoutine = () => {
     null
   );
   const [isEditingExercise, setIsEditingExercise] = useState<boolean>(false);
+  //
+  // Rotina
+  const [isLoadingCreateRoutine, setIsLoadingCreateRoutine] =
+    useState<boolean>(false);
+  const [addedExercises, setAddedExercises] = useState<any>({});
+  const [routineData, setRoutineData] = useState<RoutineData>({
+    titulo: "",
+    exercicios: [],
+  });
+
+  const columns = [
+    {
+      title: "Série",
+      dataIndex: "serie",
+      key: "serie",
+      render: (_: any, __: any, index: number) => <span>{index + 1}</span>,
+    },
+    {
+      title: "Peso",
+      dataIndex: "peso",
+      key: "peso",
+      render: (_: any, record: any, index: number) => (
+        <Input
+          placeholder="Peso"
+          value={record.peso || ""} 
+          onChange={(e) =>
+            handleDetailChange(record.exerciseId, index, "peso", e.target.value)
+          }
+        />
+      ),
+    },
+    {
+      title: "Repetições",
+      dataIndex: "repeticoes",
+      key: "repeticoes",
+      render: (_: any, record: any, index: number) => (
+        <Input
+          placeholder="Repetições"
+          value={record.repeticoes || ""} 
+          onChange={(e) =>
+            handleDetailChange(
+              record.exerciseId,
+              index,
+              "repeticoes",
+              e.target.value
+            )
+          }
+        />
+      ),
+    },
+    {
+      title: "Ações",
+      key: "actions",
+      render: (_: any, record: any, index: number) => (
+        <DeleteTwoTone
+          twoToneColor="#fc0000"
+          type="text"
+          onClick={() => handleRemoveSerie(record.exerciseId, index)}
+        />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    console.log("exercicios adicionados", addedExercises);
+  }, [addedExercises]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -115,7 +194,10 @@ const NewRoutine = () => {
       }
       setIsLoadingCreateExercises(true);
       try {
-        const response = await postExercises(createExercises);
+        const response = await postExercises({
+          ...createExercises,
+          user_id: idUser,
+        });
 
         if (!response.detail) {
           Toast("success", "Exercício criado com sucesso!");
@@ -149,7 +231,10 @@ const NewRoutine = () => {
       setIsLoadingCreateExercises(true);
 
       try {
-        const response = await putExercises(updateExercises);
+        const response = await putExercises({
+          ...updateExercises,
+          user_id: idUser,
+        });
 
         if (!response.detail) {
           Toast("success", "Exercício alterado com sucesso!");
@@ -177,14 +262,20 @@ const NewRoutine = () => {
   };
 
   const handleDeleteExercises = async (id: number) => {
+    if (addedExercises[id]) {
+      Toast(
+        "error",
+        "Não é possível excluir um exercício que está na lista adicionada!"
+      );
+      return;
+    }
+
     try {
       const response = await deleteExercise(id);
 
       if (!response.detail) {
         Toast("success", "Exercício excluído com sucesso!");
-        setTimeout(() => {
-          fetchAllExercises();
-        }, 1500);
+        fetchAllExercises();
       } else {
         Toast("error", "Erro ao excluir exercício, tente novamente!");
         return;
@@ -193,6 +284,183 @@ const NewRoutine = () => {
       Toast("error", "Erro inesperado ao excluir exercício, tente novamente!");
       return;
     }
+  };
+
+  const handleAddExercise = (exercise: any) => {
+    setAddedExercises((prevState: any) => {
+      if (prevState[exercise.id]) {
+        Toast("error", "O exercício já foi incluído!");
+        return prevState;
+      }
+
+      const updatedState = {
+        ...prevState,
+        [exercise.id]: {
+          ...exercise,
+          detalhes: [
+            {
+              serie: 1,
+              peso: "",
+              repeticoes: "",
+            },
+          ],
+        },
+      };
+
+      handleCloseModalAllExercises();
+      return updatedState;
+    });
+  };
+
+  const handleRemoveExercise = (exerciseId: number) => {
+    setAddedExercises((prevState: any) => {
+      const updatedState = { ...prevState };
+      delete updatedState[exerciseId];
+      return updatedState;
+    });
+  };
+
+  const handleDetailChange = (
+    exerciseId: number,
+    serieIndex: number,
+    field: string,
+    value: string
+  ) => {
+    setAddedExercises((prevState: any) => {
+      const exercise = prevState[exerciseId];
+
+      const updatedDetails = exercise.detalhes.map(
+        (detail: any, index: number) =>
+          index === serieIndex ? { ...detail, [field]: value } : detail
+      );
+
+      return {
+        ...prevState,
+        [exerciseId]: {
+          ...exercise,
+          detalhes: updatedDetails,
+        },
+      };
+    });
+  };
+
+  const handleAddSerie = (exerciseId: number) => {
+    setAddedExercises((prevState: any) => {
+      const currentExercise = prevState[exerciseId];
+
+      return {
+        ...prevState,
+        [exerciseId]: {
+          ...currentExercise,
+          detalhes: [
+            ...currentExercise.detalhes,
+            {
+              serie: currentExercise.detalhes.length + 1,
+              peso: "",
+              repeticoes: "",
+            },
+          ],
+        },
+      };
+    });
+  };
+
+  const handleRemoveSerie = (exerciseId: number, serieIndex: number) => {
+    setAddedExercises((prevState: any) => {
+      const exercise = prevState[exerciseId];
+
+      if (exercise.detalhes.length <= 1) {
+        Toast("error", "O exercício deve conter pelo menos uma série.");
+        return prevState;
+      }
+
+      const updatedDetails = exercise.detalhes.filter(
+        (_: any, index: number) => index !== serieIndex
+      );
+
+      return {
+        ...prevState,
+        [exerciseId]: {
+          ...exercise,
+          detalhes: updatedDetails,
+        },
+      };
+    });
+  };
+
+  const handleCreateRoutine = async () => {
+    const { titulo, exercicios } = routineData;
+
+    if (titulo === "") {
+      Toast("error", "Adicione um título para este treinamento!");
+      return;
+    }
+
+    if (exercicios.length == 0) {
+      Toast("error", "Incluia ao menos um exercício para continuar");
+      return;
+    }
+
+    for (const exercise of exercicios) {
+      for (const detail of exercise.detalhes) {
+        if (!detail.peso.trim() || !detail.repeticoes.trim()) {
+          Toast(
+            "error",
+            `Preencha todos os campos de peso e repetições no exercício: ${exercise.nome}`
+          );
+          return;
+        }
+      }
+    }
+
+    setIsLoadingCreateRoutine(true);
+
+    try {
+      const transformedRoutine = {
+        titulo: routineData.titulo,
+        exercicios: routineData.exercicios.map((exercise) => ({
+          id: exercise.id,
+          nome: exercise.nome,
+          tipo_exercicio: exercise.tipo_exercicio,
+          detalhes: exercise.detalhes.map((detail) => ({
+            serie: String(detail.serie),
+            peso: detail.peso,
+            repeticoes: detail.repeticoes,
+          })),
+        })),
+      };
+
+      const response = await postRoutine({
+        ...transformedRoutine,
+        user_id: idUser,
+      });
+
+      if (response.mensagem === "Rotina adicionada com sucesso!") {
+        Toast("success", "Rotina cadastrada com sucesso!");
+        setTimeout(() => {
+          setIsLoadingCreateRoutine(false);
+          navigate("/routine");
+        }, 1500);
+      } else {
+        Toast("error", "Erro ao cadastrar rotina, tente novamente!");
+        setIsLoadingCreateRoutine(false);
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      Toast("error", "Erro inesperado ao cadastrar rotina, tente novamente!");
+      setIsLoadingCreateRoutine(false);
+      return;
+    }
+  };
+
+  const getDataSource = (exerciseId: number) => {
+    const detalhes = addedExercises[exerciseId]?.detalhes || [];
+    return detalhes.map((detail: any, index: number) => ({
+      key: index,
+      exerciseId,
+      ...detail,
+    }));
   };
 
   const fetchAllMuscleGroups = async () => {
@@ -214,7 +482,7 @@ const NewRoutine = () => {
   const fetchAllExercises = async () => {
     setIsLoadingExercises(true);
     try {
-      const response = await getExercises();
+      const response = await getExercises(idUser);
 
       if (response) {
         setDataExercises(response);
@@ -241,7 +509,7 @@ const NewRoutine = () => {
     if (isModalOpen) {
       fetchAllExercises();
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, idUser !== ""]);
 
   useEffect(() => {
     setUpdateExercises({
@@ -252,20 +520,122 @@ const NewRoutine = () => {
     });
   }, [selectedExercise]);
 
+  useEffect(() => {
+    const updatedExercises = Object.values(addedExercises).map(
+      (exercise: any) => ({
+        id: exercise.id,
+        nome: exercise.nome,
+        grupo_muscular: exercise.grupo_muscular.nome,
+        tipo_exercicio: exercise.tipo_exercicio,
+        detalhes: exercise.detalhes,
+      })
+    );
+
+    setRoutineData((prevState) => ({
+      ...prevState,
+      exercicios: updatedExercises,
+    }));
+  }, [addedExercises]);
+
+  useEffect(() => {
+    const valueId = Cookies.get("user_id");
+    setIdUser(valueId);
+  }, [idUser !== ""]);
+
+  useEffect(() => {
+    console.log("data das rotinas", routineData);
+  }, [routineData]);
+
   return (
     <>
       <section className="new-routine">
         <div className="container-icon">
           <LeftOutlined onClick={() => navigate("/routine")} />
         </div>
-        <h2 className="subtitle">
-          Comece por adicionar um exercício à sua rotina
-        </h2>
-        <button className="btn-add-exercise" onClick={() => showModal()}>
-          <PlusOutlined />
-          Adicionar exercício
-        </button>
+
+        <section className="container-added-exercises">
+          {Object.keys(addedExercises).length <= 0 ? (
+            <h2 className="subtitle">
+              Comece por adicionar um exercício à sua rotina
+            </h2>
+          ) : (
+            <>
+              <Form.Item style={{ width: "100%", paddingTop: "10px" }}>
+                <Input
+                  variant="borderless"
+                  placeholder="Título da rotina"
+                  onChange={(e) =>
+                    setRoutineData((prevState) => ({
+                      ...prevState,
+                      titulo: e.target.value,
+                    }))
+                  }
+                />
+              </Form.Item>
+
+              <div className="content">
+                {Object.values(addedExercises).map((exercise: any) => (
+                  <Card
+                    key={exercise.id}
+                    extra={
+                      <CloseOutlined
+                        onClick={() => handleRemoveExercise(exercise.id)}
+                      />
+                    }
+                  >
+                    <Card.Meta
+                      title={exercise.nome}
+                      description={
+                        <>
+                          <p>{exercise.grupo_muscular.nome}</p>
+                          <p>{exercise.tipo_exercicio}</p>
+                        </>
+                      }
+                    />
+                    <Table
+                      columns={columns}
+                      dataSource={getDataSource(exercise.id)}
+                      size="small"
+                      pagination={false}
+                    />
+                    <Button
+                      onClick={() => handleAddSerie(exercise.id)}
+                      className="btn-add-serie"
+                    >
+                      Adicionar Série
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
+          <div className="container-btns">
+            <Button
+              color="default"
+              variant="filled"
+              onClick={() => showModal()}
+            >
+              <PlusOutlined />
+              Adicionar exercício
+            </Button>
+
+            {Object.keys(addedExercises).length > 0 && (
+              <Button
+                color="primary"
+                variant="filled"
+                onClick={() => handleCreateRoutine()}
+              >
+                {isLoadingCreateRoutine ? (
+                  <Spin indicator={<LoadingOutlined spin />} size="small" />
+                ) : (
+                  "Criar"
+                )}
+              </Button>
+            )}
+          </div>
+        </section>
       </section>
+
       <Modal
         title="Adicionar Exercício"
         open={isModalOpen}
@@ -288,12 +658,12 @@ const NewRoutine = () => {
         >
           {isLoadingExercises ? (
             <Spin indicator={<LoadingOutlined spin />} size="large" />
+          ) : dataExercises.length === 0 ? (
+            <div>Nenhum exercício encontrado</div> 
           ) : (
             dataExercises.map((item, index) => {
               const actions: React.ReactNode[] = [
-                <PlusOutlined
-                  onClick={() => console.log(`Adicionado: ${item.id}`)}
-                />,
+                <PlusOutlined onClick={() => handleAddExercise(item)} />,
                 <LineChartOutlined
                   onClick={() =>
                     console.log(`Exibindo gráfico para: ${item.id}`)

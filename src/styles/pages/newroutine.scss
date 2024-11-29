@@ -11,28 +11,57 @@
     justify-content: start;
     display: flex;
   }
-  > .subtitle {
-    font-size: 1.125rem;
+
+  > .container-added-exercises {
     width: 50%;
-    display: flex;
-    justify-content: center;
-    color: #5f5f5f;
-    font-weight: 500;
-  }
-  > .btn-add-exercise {
-    height: 30px;
-    width: 400px;
-    font-size: 0.875rem;
-    color: #fff;
-    font-size: 500;
-    border: none;
-    background-color: #000;
-    border-radius: 4px;
-    opacity: 1;
-    display: flex;
-    gap: 5px;
+    min-height: 300px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    > .subtitle {
+      font-size: 1.125rem;
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      color: #5f5f5f;
+      font-weight: 500;
+      text-align: center;
+    }
+    > .container-btns {
+      height: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ant-form-item {
+      margin-bottom: 0 !important;
+    }
+    > .content {
+      max-height: 450px;
+      overflow: auto;
+      width: 100%;
+      padding-right: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      > .ant-card {
+        > .ant-card-body {
+          .ant-table-wrapper {
+            padding-top: 10px;
+            max-height: 180px;
+            overflow: auto;
+          }
+          > .btn-add-serie {
+            font-size: 0.75rem;
+            margin-top: 15px;
+          }
+        }
+      }
+    }
   }
 }
 

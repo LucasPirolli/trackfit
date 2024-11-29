@@ -69,6 +69,10 @@
     gap: 20px;
     padding-right: 10px;
 
+    &.loading {
+      overflow: hidden;
+    }
+
     > .ant-card {
       border-color: #b9b9b9;
       cursor: pointer;

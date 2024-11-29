@@ -8,6 +8,7 @@ import Toast from "../components/ui/Toast";
 import { Form, Input, Spin } from "antd";
 import { LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 // API
 import { login } from "../../services/endpoints";
@@ -15,9 +16,13 @@ import { login } from "../../services/endpoints";
 // Estilos
 import "../../styles/pages/login.scss";
 
+// Contexto
+import { useMain } from "../../context/MainContext";
+
 const Login = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const { setIdUser } = useMain();
   const [isLoading, setIsLoading] = useState(false);
   const [userLogin, setUserLogin] = useState({
     identificador: "",
@@ -38,6 +43,8 @@ const Login = () => {
 
       if (response.mensagem === "Login realizado com sucesso!") {
         Toast("success", "Login realizado com sucesso!");
+        Cookies.set("user_id", response.user_id);
+        setIdUser(response.user_id);
         setTimeout(() => {
           setIsLoading(false);
           navigate("/routine");
