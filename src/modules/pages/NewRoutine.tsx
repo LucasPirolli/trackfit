@@ -105,7 +105,7 @@ const NewRoutine = () => {
       render: (_: any, record: any, index: number) => (
         <Input
           placeholder="Peso"
-          value={record.peso || ""} 
+          value={record.peso || ""}
           onChange={(e) =>
             handleDetailChange(record.exerciseId, index, "peso", e.target.value)
           }
@@ -119,7 +119,7 @@ const NewRoutine = () => {
       render: (_: any, record: any, index: number) => (
         <Input
           placeholder="Repetições"
-          value={record.repeticoes || ""} 
+          value={record.repeticoes || ""}
           onChange={(e) =>
             handleDetailChange(
               record.exerciseId,
@@ -659,16 +659,12 @@ const NewRoutine = () => {
           {isLoadingExercises ? (
             <Spin indicator={<LoadingOutlined spin />} size="large" />
           ) : dataExercises.length === 0 ? (
-            <div>Nenhum exercício encontrado</div> 
+            <div>Nenhum exercício encontrado</div>
           ) : (
             dataExercises.map((item, index) => {
               const actions: React.ReactNode[] = [
                 <PlusOutlined onClick={() => handleAddExercise(item)} />,
-                <LineChartOutlined
-                  onClick={() =>
-                    console.log(`Exibindo gráfico para: ${item.id}`)
-                  }
-                />,
+                <LineChartOutlined onClick={() => navigate("/history")} />,
                 <EditOutlined onClick={() => handleCardClick(item)} />,
                 <DeleteOutlined
                   onClick={() => handleDeleteExercises(item.id)}

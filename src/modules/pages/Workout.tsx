@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 
 // Componentes Terceiros
-import { DeleteOutlined, LeftOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  LeftOutlined,
+  LineChartOutlined,
+} from "@ant-design/icons";
 import { Card, Table } from "antd";
 import type { TableProps } from "antd";
 
@@ -52,26 +56,31 @@ const Workout = () => {
       </div>
       <h2 className="subtitle">Exercícios :</h2>
       <div className="container-cards">
-        {selectedData.exercicios.map((exercicio: any, index: number) => (
-          <Card key={index}>
-            <Card.Meta
-              title={exercicio.nome}
-              description={
-                <>
-                  <p>{exercicio.grupo_muscular}</p>
-                  <p>{exercicio.tipo_exercicio}</p>
+        {selectedData.exercicios.map((exercicio: any, index: number) => {
+          const actions: React.ReactNode[] = [
+            <LineChartOutlined onClick={() => navigate("/history")} />,
+          ];
+          return (
+            <Card key={index} actions={actions}>
+              <Card.Meta
+                title={exercicio.nome}
+                description={
+                  <>
+                    <p>{exercicio.grupo_muscular}</p>
+                    <p>{exercicio.tipo_exercicio}</p>
 
-                  <Table<DataType>
-                    columns={columns}
-                    dataSource={exercicio.detalhes}
-                    size="small"
-                    pagination={false}
-                  />
-                </>
-              }
-            />
-          </Card>
-        ))}
+                    <Table<DataType>
+                      columns={columns}
+                      dataSource={exercicio.detalhes}
+                      size="small"
+                      pagination={false}
+                    />
+                  </>
+                }
+              />
+            </Card>
+          );
+        })}
       </div>
     </section>
   );
