@@ -62,17 +62,19 @@ const History = () => {
           <LeftOutlined onClick={() => navigate("/routine")} />
           <h3 className="title">Histórico: Agachamento Livre</h3>
         </div>
-        {data.map((day) => (
-          <div key={day.date} className="content-informations">
-            <span className="date">Data: {day.date}</span>
-            <Table
-              columns={columns}
-              dataSource={day.records}
-              size="small"
-              pagination={false}
-            />
-          </div>
-        ))}
+        <div className="container-informations">
+          {data.map((day) => (
+            <div key={day.date} className="content-informations">
+              <span className="date">Data: {day.date}</span>
+              <Table
+                columns={columns}
+                dataSource={day.records}
+                size="small"
+                pagination={false}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
