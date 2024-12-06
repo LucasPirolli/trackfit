@@ -139,6 +139,24 @@ export const getRoutine = async (idUser: string) => {
   return data;
 };
 
+export const getLogsExercises = async (id: number) => {
+  const endpoint = `/detalhes/${id}`;
+
+  const response = await fetch(`${import.meta.env.VITE_BASE_PATH}${endpoint}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch exercises by category");
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 export const putExercises = async (body: object) => {
   try {
     const response = await fetch(

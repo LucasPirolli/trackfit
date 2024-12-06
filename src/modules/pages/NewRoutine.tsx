@@ -144,10 +144,6 @@ const NewRoutine = () => {
     },
   ];
 
-  useEffect(() => {
-    console.log("exercicios adicionados", addedExercises);
-  }, [addedExercises]);
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -454,6 +450,14 @@ const NewRoutine = () => {
     }
   };
 
+  const handleTogglePage = (data: any) => {
+    navigate("/history", {
+      state: {
+        selectedData: data,
+      },
+    });
+  };
+
   const getDataSource = (exerciseId: number) => {
     const detalhes = addedExercises[exerciseId]?.detalhes || [];
     return detalhes.map((detail: any, index: number) => ({
@@ -664,7 +668,7 @@ const NewRoutine = () => {
             dataExercises.map((item, index) => {
               const actions: React.ReactNode[] = [
                 <PlusOutlined onClick={() => handleAddExercise(item)} />,
-                <LineChartOutlined onClick={() => navigate("/history")} />,
+                <LineChartOutlined onClick={() => handleTogglePage(item)} />,
                 <EditOutlined onClick={() => handleCardClick(item)} />,
                 <DeleteOutlined
                   onClick={() => handleDeleteExercises(item.id)}

@@ -28,6 +28,9 @@
       gap: 20px;
       display: flex;
       flex-direction: column;
+      &.loading {
+        overflow: hidden;
+      }
       > .content-informations {
         padding-top: 10px;
         width: 100%;
